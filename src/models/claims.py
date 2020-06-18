@@ -1,12 +1,12 @@
 from pymongo import MongoClient
-from config import DOCUMENT_STORE
+from config.config import DOCUMENT_STORE
 
 client = MongoClient(DOCUMENT_STORE["DB_HOST"], DOCUMENT_STORE["DB_PORT"], connect=False)
 
 class Claim:
-    def __init__(self, file_name=None, file=None, textract_jobId = None):
+    def __init__(self, file_name=None, rooms=None, textract_job_id = None):
         self.__file_name = file_name
-        self.__file = file
+        self.__rooms = rooms
         self.__textract_job_id = textract_job_id
     
     def save(self):
@@ -15,8 +15,8 @@ class Claim:
 
         try:
             unique_id = collection.save({
-                "file_name": self.__file_name
-                "file": self.__file
+                "file_name": self.__file_name,
+                "rooms": self.__rooms,
                 "textract_job_id": self.__textract_job_id
             })
         except Exception as e:

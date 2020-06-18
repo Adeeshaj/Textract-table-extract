@@ -85,7 +85,7 @@ class DocumentProcessor:
                         print('Matching Job Found:' + textMessage['JobId'])
                         jobFound = True
                         jobId = textMessage['JobId']
-                        results.extends(self.GetResults(jobId))
+                        results.extend(self.GetResults(jobId))
                         self.sqs.delete_message(QueueUrl=self.sqsQueueUrl,
                                        ReceiptHandle=message['ReceiptHandle'])
                     else:
@@ -95,7 +95,7 @@ class DocumentProcessor:
                                    ReceiptHandle=message['ReceiptHandle'])
 
         print('Done!')
-        return resutls, jobId
+        return results, jobId
 
     
 

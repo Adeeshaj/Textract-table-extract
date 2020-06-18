@@ -100,7 +100,7 @@ def get_table_json_results(texeract_output):
         return "<b> NO Table FOUND </b>"
 
     tables = []
-    for table in enumerate(table_blocks):
+    for table in table_blocks:
         tables.append(get_rows_columns_map(table, blocks_map)) 
     return tables
 
