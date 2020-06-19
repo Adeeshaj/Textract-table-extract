@@ -10,7 +10,7 @@ import json
 from flask import Flask, request
 import lib.multipage_detect_analize_text as mulitpage_analyser
 import lib.textract_table_parser as table_parser
-from lib.s3 import upload_file
+from lib.s3 import upload_file, delete_file
 from config.config import BUCKET_NAME, TEXTRACT_ROLE_ARN
 from models.outputs import Output
 from models.claims import Claim
@@ -34,6 +34,7 @@ def extract_ocr_data():
             file_path = content["path"]
             file_name = content["name"]
             uploaded = upload_file(file_path, BUCKET_NAME, file_name)
+
             if(uploaded):
                 analyzer = mulitpage_analyser.DocumentProcessor(TEXTRACT_ROLE_ARN, BUCKET_NAME, file_name)
                 analyzer.CreateTopicandQueue()
@@ -56,9 +57,13 @@ def extract_ocr_data():
                 valid_tables = get_valid_tables(json_tables)
                 rooms = create_rooms(valid_tables)
                 claim = Claim(file_name, rooms, job_id)
-                claim.save()
+                claim_id = claim.save()
+                delete_file(file_name, BUCKET_NAME)
+
             else:
                 print("no output id")
+
+                
     return "Done!"
 
 
